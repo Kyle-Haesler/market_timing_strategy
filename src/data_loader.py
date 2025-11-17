@@ -1,17 +1,22 @@
+import os
 import yfinance as yf
-import pandas as pd
-from pathlib import Path
 
-DATA_PATH = Path("data") # Relative to project root
+# Yahoofinance download inputs
+ticker = "SPY"
+interval = "1d"
 
-def download_spy(force=False):
-    # Download historical data for SPY ETF if not already cached
-    DATA_PATH.mkdir(exist_ok=True)
-    file_path = DATA_PATH / "spy.csv"
+# Download data from Yahoofinance and polish DataFrame
+data = yf.download(ticker, period="max", interval=interval, auto_adjust=False)
+data.columns = data.columns.droplevel(1)
+data.columns.name = None
+data.reset_index(inplace=True)
 
-    if file_path.exists() and not force:
-        return pd.read_csv(file_path, parse_dates=["Date"], index_col="Date")
-    
-    df = yf.download("SPY", start="1993-01-01")
-    df.to_csv(file_path)
-    return df
+# Ensure data folder exists
+os.makedirs("../data", exist_ok=True)
+
+save_path = "../data/spy.csv"
+
+# Save the data in a CSV file
+data.to_csv(save_path, index=False)
+
+print(f"\n Data saved successfully to {save_path}")
