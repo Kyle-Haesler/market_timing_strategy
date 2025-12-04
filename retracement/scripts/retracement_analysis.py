@@ -4,8 +4,8 @@ import pandas as pd
 data = pd.read_csv("../../data/spy.csv", parse_dates=["Date"])
 
 # Add max high & retracement column to DataFrame
-data["Max High"] = data["High"].cummax()
-data["Retracement"] = (data["Low"] - data["Max High"]) / data["Max High"] 
+data["Max Close"] = data["Adj Close"].cummax()
+data["Retracement"] = (data["Adj Close"] - data["Max Close"]) / data["Max Close"] 
 
 
 # Add dataset as csv to data_set folder
